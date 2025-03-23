@@ -7,17 +7,27 @@ function App() {
   const [username, setUserName] = useState('')
   const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(false)
-  console.log(username);
+
 
   useEffect(() => {
     if (!username) return;
     setLoading(true)
-    fetch(`https://api.github.com/users/${username}`).then((res) => res.json()).
+    fetch(`https://api.github.com/users/${username}`).
+      then((res) => {
+        if (!res.ok) throw new Error("user not found");
+        return res.json()
+      }).
       then((data) => {
         setUserData(data);
         setLoading(false)
         console.log(data);
 
+
+
+      }).catch((error) => {
+        setLoading(false)
+        console.error(error.message, "Error");
+        alert('username not found ')
       })
 
   }, [username])
